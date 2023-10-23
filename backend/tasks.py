@@ -30,6 +30,6 @@ def start_scheduler(db: Session, word_game_checker: WordGameChecker):
     scheduler = BackgroundScheduler()
     scheduler.start()
 
-    trigger = IntervalTrigger(minutes=1)  # Set the trigger to run every minute
+    trigger = IntervalTrigger(minutes=30)
     scheduler.add_job(prepare_new_game, trigger, [db, word_game_checker])
 
