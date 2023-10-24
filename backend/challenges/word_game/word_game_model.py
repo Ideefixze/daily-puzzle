@@ -12,12 +12,6 @@ class WordGameSQLModel(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     word_game = Column(Text)
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'word_game': json.loads(self.word_game)
-        }
      
 WordGame = sqlalchemy_to_pydantic(WordGameSQLModel)
 

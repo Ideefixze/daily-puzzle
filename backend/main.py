@@ -21,7 +21,7 @@ import tasks
 
 Base.metadata.create_all(engine)
 
-s = SessionLocal()
+session = SessionLocal()
 word_game = WordGameChecker()
 
 app = FastAPI()
@@ -39,20 +39,20 @@ discord_client = discordpy.Client(intents=discordpy.Intents.default())
 
 def init_db_data():
     print("Stating up game. Initializing data.")
-    if not s.query(UserSQLModel).filter(UserSQLModel.discord_id=='anon').first():
+    if not session.query(UserSQLModel).filter(UserSQLModel.discord_id=='anon').first():
         print("Default, anonymous user not found.")
         anon_user = UserSQLModel(discord_id="anon", username="Anonymous", avatar="")
 
-        s.add(anon_user)
-        s.commit()
+        session.add(anon_user)
+        session.commit()
         print("Anonymous user created.")
         
         test_game = WordGameSQLModel(word_game=json.dumps({"t": 2, "e": 1, "s": 1}))
-        s.add(test_game)
-        s.commit()
+        session.add(test_game)
+        session.commit()
         print("Initialized test game.")
     
-    word_game.init_char_dict(json.loads(get_current_word_game(s).word_game))
+    word_game.init_char_dict(json.loads(get_current_word_game(session).word_game))
 
     
 @app.on_event("startup")
@@ -60,7 +60,7 @@ async def on_startup():
     init_db_data()
     await discord.init()
     asyncio.create_task(discord_client.start(DISCORD_API))
-    tasks.start_scheduler(s, word_game)
+    tasks.start_scheduler(session, word_game)
 
 # === AUTH
 
@@ -117,7 +117,7 @@ async def get_user(user: User = Depends(discord.user)):
 
 @app.get("/user/{id}")
 async def get_user(id: str):
-    return get_user_by_internal_id(s, id)
+    return get_user_by_internal_id(session, id)
 
 @app.get(
     "/guilds",
@@ -140,12 +140,12 @@ async def get_score(solution: str):
     return {
         "score": score, 
         "status": word_game.check_solution(solution) == WordGameSolutionStatus.OK,
-        "place": get_current_place(s, score)
+        "place": get_current_place(session, score)
     }
 
 @word_game_router.get("/solutions")
 async def current_solutions():
-    return get_current_solutions(s)
+    return get_current_solutions(session)
 
 async def optional_user(request: Request):
     try:
@@ -155,8 +155,8 @@ async def optional_user(request: Request):
 
 @word_game_router.post("/submit")
 async def submit_word_game(solution: WordGameSolution, user: str = Depends(optional_user)):
-    user = await get_user_by_discord_id(s, user, discord_client)
-    solution = submit_solution(s, solution.solution, word_game, user)
+    user = await get_user_by_discord_id(session, user, discord_client)
+    solution = submit_solution(session, solution.solution, word_game, user)
     if solution:
         return {"status": "OK"}
     else:
