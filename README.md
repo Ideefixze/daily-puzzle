@@ -25,7 +25,8 @@ Backend:
 Frontend
 
 1. `npm install`
-2. `npm start`
+2. Edit `.env` file and set proper API adress if deploying
+3. `npm start`
 
 # Screenshot
 
