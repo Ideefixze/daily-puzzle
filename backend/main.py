@@ -134,6 +134,15 @@ word_game_router = APIRouter(prefix="/word_game")
 async def current_word_game():
     return {"word_game": word_game.word_game}
 
+@word_game_router.get("/check")
+async def get_score(solution: str):
+    score = word_game.get_solution_score(solution)
+    return {
+        "score": score, 
+        "status": word_game.check_solution(solution) == WordGameSolutionStatus.OK,
+        "place": get_current_place(s, score)
+    }
+
 @word_game_router.get("/solutions")
 async def current_solutions():
     return get_current_solutions(s)

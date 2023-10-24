@@ -13,6 +13,8 @@ export interface WordGamePuzzle {
 
 export interface WordGameSolutionStatus {
     status: string,
+    score: number,
+    place: number
 }
 
 export interface WordGameSolution {

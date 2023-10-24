@@ -1,13 +1,6 @@
 import axios from 'axios';
 import { AnyObject, DiscordUser, Tokens, WordGamePuzzle, WordGameSolution, WordGameSolutionStatus } from './types';
 const API_URL = process.env.REACT_APP_API_URL;
-
-export default axios.create({
-    baseURL: "http://127.0.0.1:8000",
-    headers: {
-        'Content-Type': 'application/json',
-    },
-})
   
 function convertKeysToCamelCase(obj: AnyObject): AnyObject {
     if (obj === null || typeof obj !== 'object') return obj;
@@ -30,7 +23,7 @@ export const getCurrentWordGamePuzzle: () => Promise<WordGamePuzzle> = () => axi
 
 export const getCurrentWordGameSolutions: () => Promise<[WordGameSolution]> = () => axios.get(`${API_URL}/word_game/solutions`).then(resp => Object.values(convertKeysToCamelCase(resp.data)) as [WordGameSolution]);
 
-export const submitSolutionAnonymous: (puzzleSolution: string) => Promise<WordGameSolutionStatus> = (puzzleSolution) => axios.post(`${API_URL}/word_game/submit`, {solution: puzzleSolution}).then(resp => resp.data);
+export const checkSolution: (puzzleSolution: string) => Promise<WordGameSolutionStatus> = (puzzleSolution) => axios.get(`${API_URL}/word_game/check?solution=${puzzleSolution}`).then(resp => resp.data);
 
 export const submitSolution: (puzzleSolution: string, token: string) => Promise<WordGameSolutionStatus> = (puzzleSolution, token) => axios.post(`${API_URL}/word_game/submit`, {solution: puzzleSolution}, {headers:{Authorization: `Bearer ${token}`}}).then(resp => resp.data);
 

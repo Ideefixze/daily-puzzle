@@ -1,5 +1,22 @@
 import { WordGamePuzzle } from "../../types";
 
+
+export function ordinalSuffix(i: number) {
+    var j = i % 10,
+        k = i % 100;
+    const iStr = String(i);
+    if (j == 1 && k != 11) {
+        return iStr + "st";
+    }
+    if (j == 2 && k != 12) {
+        return iStr + "nd";
+    }
+    if (j == 3 && k != 13) {
+        return iStr + "rd";
+    }
+    return iStr + "th";
+}
+
 export function parseWordGameToText(wordGame: WordGamePuzzle):string {
 
     return Object.entries(wordGame).sort(([a], [b]) => a.localeCompare(b)).map(([char, count]) => char.repeat(count)).join('');

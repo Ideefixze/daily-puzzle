@@ -18,7 +18,7 @@ def prepare_new_game(db: Session, word_game_checker: WordGameChecker):
         db.commit()
         if config.ENABLE_WEBHOOK:
             webhook = DiscordWebhook(url=config.DISCORD_SERVER_WEBHOOK)
-            embed = DiscordEmbed("Witajcie na Rokkenjimie,", "Rozwiążcie nowe epitafium.")
+            embed = DiscordEmbed("Witajcie na Rokkenjimie,", "wiedźma przygotowała dla was zadanie. Rozwiążcie nowe epitafium, a zwycięzca zdobędzie skarby nie z tego świata! Pełny ranking wraz z rozwiązaniami będzie dostępny następnego dnia. Powodzenia!")
             embed.add_embed_field(name='Link', value=f'[Kliknij tutaj!]({config.APP_LINK})')
             webhook.add_embed(embed)
             webhook.execute() 
@@ -28,8 +28,6 @@ def prepare_new_game(db: Session, word_game_checker: WordGameChecker):
 
 def start_scheduler(db: Session, word_game_checker: WordGameChecker):
     scheduler = BackgroundScheduler()
+    scheduler.add_job(prepare_new_game, 'cron', [db, word_game_checker], hour=16)
     scheduler.start()
-
-    trigger = IntervalTrigger(minutes=30)
-    scheduler.add_job(prepare_new_game, trigger, [db, word_game_checker])
 

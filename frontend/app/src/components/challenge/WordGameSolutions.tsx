@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getCurrentWordGamePuzzle, submitSolution, getUserProfile, submitSolutionAnonymous, getCurrentWordGameSolutions, getUser} from '../../API';
-import { DiscordUser, WordGamePuzzle, WordGameSolution } from '../../types';
-import { parseWordGameToText, countCharacters, isGameCorrect, solutionGameDiff, solutionGameDiffString} from '../utils/UtilFunctions';
-import { UserData } from '../Router';
+import {getCurrentWordGameSolutions} from '../../API';
+import { WordGameSolution } from '../../types';
 
 const WordGameSolutions: React.FC = () => {
     const [solutions, setSolutions] = useState<[WordGameSolution]>();
@@ -29,7 +27,7 @@ const WordGameSolutions: React.FC = () => {
         {
         solutions &&
         solutions?.sort((sola, solb) => solb.score - sola.score).map((item, id)=> 
-          <tr>
+          <tr key={id}>
             <th scope='row'>{id+1}</th>
             <td>{item.solution}</td> 
             <td>{item.score}</td>

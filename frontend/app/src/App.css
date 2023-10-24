@@ -78,6 +78,24 @@ body {
   width: 100%;
 }
 
+.App-word-game-window {
+  width: 66%;
+  margin: auto;
+}
+
+.App-word-game-letters {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 0.8em;
+  animation: color-change 4s infinite;
+}
+
+@keyframes color-change {
+  0% { color: white; }
+  50% { color: red; }
+  100% { color: white; }
+}
+
 .discord-avatar {
   width: 40px;
   border-radius: 50%;

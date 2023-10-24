@@ -16,7 +16,6 @@ const SessionStarter: React.FC<SessionStarterProps> = (props) => {
         const codeParam = params.get('code') || '';
 
         startSession(codeParam).then((resp)=>{
-            console.log(resp)
             localStorage.setItem('token', resp.accessToken);
             localStorage.setItem('refreshToken', resp.refreshToken);
             props.handleLogin();
